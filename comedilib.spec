@@ -4,7 +4,7 @@
 #
 Name     : comedilib
 Version  : 0.11.0
-Release  : 3
+Release  : 4
 URL      : https://github.com/Linux-Comedi/comedilib/releases/download/r0_11_0/comedilib-0.11.0.tar.gz
 Source0  : https://github.com/Linux-Comedi/comedilib/releases/download/r0_11_0/comedilib-0.11.0.tar.gz
 Summary  : Data Acquisition library for the Comedi DAQ driver.
@@ -13,7 +13,7 @@ License  : LGPL-2.1
 Requires: comedilib-bin
 Requires: comedilib-lib
 Requires: comedilib-doc
-Requires: comedilib-legacypython
+Requires: comedilib-python3
 Requires: comedilib-python
 BuildRequires : bison
 BuildRequires : flex
@@ -57,15 +57,6 @@ Group: Documentation
 doc components for the comedilib package.
 
 
-%package legacypython
-Summary: legacypython components for the comedilib package.
-Group: Default
-Requires: python-core
-
-%description legacypython
-legacypython components for the comedilib package.
-
-
 %package lib
 Summary: lib components for the comedilib package.
 Group: Libraries
@@ -77,10 +68,19 @@ lib components for the comedilib package.
 %package python
 Summary: python components for the comedilib package.
 Group: Default
-Requires: comedilib-legacypython
+Requires: comedilib-python3
 
 %description python
 python components for the comedilib package.
+
+
+%package python3
+Summary: python3 components for the comedilib package.
+Group: Default
+Requires: python3-core
+
+%description python3
+python3 components for the comedilib package.
 
 
 %prep
@@ -91,9 +91,9 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1507572534
+export SOURCE_DATE_EPOCH=1517619939
 %configure --disable-static
-make V=1  %{?_smp_mflags}
+make  %{?_smp_mflags}
 
 %check
 export LANG=C
@@ -103,7 +103,7 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1507572534
+export SOURCE_DATE_EPOCH=1517619939
 rm -rf %{buildroot}
 %make_install
 
@@ -131,10 +131,6 @@ rm -rf %{buildroot}
 %doc /usr/share/man/man7/*
 %doc /usr/share/man/man8/*
 
-%files legacypython
-%defattr(-,root,root,-)
-/usr/lib/python2*/*
-
 %files lib
 %defattr(-,root,root,-)
 /usr/lib64/libcomedi.so.0
@@ -142,3 +138,7 @@ rm -rf %{buildroot}
 
 %files python
 %defattr(-,root,root,-)
+
+%files python3
+%defattr(-,root,root,-)
+/usr/lib/python3*/*
