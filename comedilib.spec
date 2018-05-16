@@ -4,7 +4,7 @@
 #
 Name     : comedilib
 Version  : 0.11.0
-Release  : 5
+Release  : 6
 URL      : https://github.com/Linux-Comedi/comedilib/releases/download/r0_11_0/comedilib-0.11.0.tar.gz
 Source0  : https://github.com/Linux-Comedi/comedilib/releases/download/r0_11_0/comedilib-0.11.0.tar.gz
 Summary  : Data Acquisition library for the Comedi DAQ driver.
