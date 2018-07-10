@@ -4,7 +4,7 @@
 #
 Name     : comedilib
 Version  : 0.11.0
-Release  : 9
+Release  : 10
 URL      : https://github.com/Linux-Comedi/comedilib/releases/download/r0_11_0/comedilib-0.11.0.tar.gz
 Source0  : https://github.com/Linux-Comedi/comedilib/releases/download/r0_11_0/comedilib-0.11.0.tar.gz
 Summary  : Data Acquisition library for the Comedi DAQ driver.
@@ -12,14 +12,14 @@ Group    : Development/Tools
 License  : LGPL-2.1
 Requires: comedilib-bin
 Requires: comedilib-lib
-Requires: comedilib-doc
+Requires: comedilib-license
+Requires: comedilib-man
 Requires: comedilib-python3
 Requires: comedilib-python
 BuildRequires : bison
 BuildRequires : flex
 BuildRequires : pbr
 BuildRequires : pip
-
 BuildRequires : python3-dev
 BuildRequires : setuptools
 BuildRequires : swig
@@ -33,6 +33,8 @@ supported DAQ cards, such as those from National Instruments.
 %package bin
 Summary: bin components for the comedilib package.
 Group: Binaries
+Requires: comedilib-license
+Requires: comedilib-man
 
 %description bin
 bin components for the comedilib package.
@@ -52,6 +54,7 @@ dev components for the comedilib package.
 %package doc
 Summary: doc components for the comedilib package.
 Group: Documentation
+Requires: comedilib-man
 
 %description doc
 doc components for the comedilib package.
@@ -60,9 +63,26 @@ doc components for the comedilib package.
 %package lib
 Summary: lib components for the comedilib package.
 Group: Libraries
+Requires: comedilib-license
 
 %description lib
 lib components for the comedilib package.
+
+
+%package license
+Summary: license components for the comedilib package.
+Group: Default
+
+%description license
+license components for the comedilib package.
+
+
+%package man
+Summary: man components for the comedilib package.
+Group: Default
+
+%description man
+man components for the comedilib package.
 
 
 %package python
@@ -91,8 +111,8 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1517619939
-%configure --disable-static
+export SOURCE_DATE_EPOCH=1531203065
+%configure --disable-static PYTHON=python3
 make  %{?_smp_mflags}
 
 %check
@@ -103,8 +123,10 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1517619939
+export SOURCE_DATE_EPOCH=1531203065
 rm -rf %{buildroot}
+mkdir -p %{buildroot}/usr/share/doc/comedilib
+cp COPYING %{buildroot}/usr/share/doc/comedilib/COPYING
 %make_install
 
 %files
@@ -124,17 +146,119 @@ rm -rf %{buildroot}
 /usr/lib64/pkgconfig/comedilib.pc
 
 %files doc
-%defattr(-,root,root,-)
+%defattr(0644,root,root,0755)
 %doc /usr/share/doc/comedilib/*
-%doc /usr/share/man/man1/*
-%doc /usr/share/man/man3/*
-%doc /usr/share/man/man7/*
-%doc /usr/share/man/man8/*
 
 %files lib
 %defattr(-,root,root,-)
 /usr/lib64/libcomedi.so.0
 /usr/lib64/libcomedi.so.0.11.0
+
+%files license
+%defattr(-,root,root,-)
+/usr/share/doc/comedilib/COPYING
+
+%files man
+%defattr(-,root,root,-)
+/usr/share/man/man1/comedi_board_info.1
+/usr/share/man/man3/comedi_apply_calibration.3
+/usr/share/man/man3/comedi_apply_parsed_calibration.3
+/usr/share/man/man3/comedi_arm.3
+/usr/share/man/man3/comedi_arm_channel.3
+/usr/share/man/man3/comedi_cancel.3
+/usr/share/man/man3/comedi_cleanup_calibration.3
+/usr/share/man/man3/comedi_close.3
+/usr/share/man/man3/comedi_command.3
+/usr/share/man/man3/comedi_command_test.3
+/usr/share/man/man3/comedi_data_read.3
+/usr/share/man/man3/comedi_data_read_delayed.3
+/usr/share/man/man3/comedi_data_read_hint.3
+/usr/share/man/man3/comedi_data_read_n.3
+/usr/share/man/man3/comedi_data_write.3
+/usr/share/man/man3/comedi_digital_trigger_disable.3
+/usr/share/man/man3/comedi_digital_trigger_enable_edges.3
+/usr/share/man/man3/comedi_digital_trigger_enable_levels.3
+/usr/share/man/man3/comedi_dio_bitfield.3
+/usr/share/man/man3/comedi_dio_bitfield2.3
+/usr/share/man/man3/comedi_dio_config.3
+/usr/share/man/man3/comedi_dio_get_config.3
+/usr/share/man/man3/comedi_dio_read.3
+/usr/share/man/man3/comedi_dio_write.3
+/usr/share/man/man3/comedi_disarm.3
+/usr/share/man/man3/comedi_disarm_channel.3
+/usr/share/man/man3/comedi_do_insn.3
+/usr/share/man/man3/comedi_do_insnlist.3
+/usr/share/man/man3/comedi_errno.3
+/usr/share/man/man3/comedi_fileno.3
+/usr/share/man/man3/comedi_find_range.3
+/usr/share/man/man3/comedi_find_subdevice_by_type.3
+/usr/share/man/man3/comedi_from_phys.3
+/usr/share/man/man3/comedi_from_physical.3
+/usr/share/man/man3/comedi_get_board_name.3
+/usr/share/man/man3/comedi_get_buffer_contents.3
+/usr/share/man/man3/comedi_get_buffer_offset.3
+/usr/share/man/man3/comedi_get_buffer_read_count.3
+/usr/share/man/man3/comedi_get_buffer_read_offset.3
+/usr/share/man/man3/comedi_get_buffer_size.3
+/usr/share/man/man3/comedi_get_buffer_write_count.3
+/usr/share/man/man3/comedi_get_buffer_write_offset.3
+/usr/share/man/man3/comedi_get_clock_source.3
+/usr/share/man/man3/comedi_get_cmd_generic_timed.3
+/usr/share/man/man3/comedi_get_cmd_src_mask.3
+/usr/share/man/man3/comedi_get_default_calibration_path.3
+/usr/share/man/man3/comedi_get_driver_name.3
+/usr/share/man/man3/comedi_get_gate_source.3
+/usr/share/man/man3/comedi_get_hardcal_converter.3
+/usr/share/man/man3/comedi_get_hardware_buffer_size.3
+/usr/share/man/man3/comedi_get_max_buffer_size.3
+/usr/share/man/man3/comedi_get_maxdata.3
+/usr/share/man/man3/comedi_get_n_channels.3
+/usr/share/man/man3/comedi_get_n_ranges.3
+/usr/share/man/man3/comedi_get_n_subdevices.3
+/usr/share/man/man3/comedi_get_range.3
+/usr/share/man/man3/comedi_get_read_subdevice.3
+/usr/share/man/man3/comedi_get_routing.3
+/usr/share/man/man3/comedi_get_softcal_converter.3
+/usr/share/man/man3/comedi_get_subdevice_flags.3
+/usr/share/man/man3/comedi_get_subdevice_type.3
+/usr/share/man/man3/comedi_get_timer.3
+/usr/share/man/man3/comedi_get_version_code.3
+/usr/share/man/man3/comedi_get_write_subdevice.3
+/usr/share/man/man3/comedi_internal_trigger.3
+/usr/share/man/man3/comedi_lock.3
+/usr/share/man/man3/comedi_loglevel.3
+/usr/share/man/man3/comedi_mark_buffer_read.3
+/usr/share/man/man3/comedi_mark_buffer_written.3
+/usr/share/man/man3/comedi_maxdata_is_chan_specific.3
+/usr/share/man/man3/comedi_open.3
+/usr/share/man/man3/comedi_parse_calibration_file.3
+/usr/share/man/man3/comedi_perror.3
+/usr/share/man/man3/comedi_poll.3
+/usr/share/man/man3/comedi_range_is_chan_specific.3
+/usr/share/man/man3/comedi_reset.3
+/usr/share/man/man3/comedi_reset_channel.3
+/usr/share/man/man3/comedi_set_buffer_size.3
+/usr/share/man/man3/comedi_set_clock_source.3
+/usr/share/man/man3/comedi_set_counter_mode.3
+/usr/share/man/man3/comedi_set_filter.3
+/usr/share/man/man3/comedi_set_gate_source.3
+/usr/share/man/man3/comedi_set_global_oor_behavior.3
+/usr/share/man/man3/comedi_set_max_buffer_size.3
+/usr/share/man/man3/comedi_set_other_source.3
+/usr/share/man/man3/comedi_set_read_subdevice.3
+/usr/share/man/man3/comedi_set_routing.3
+/usr/share/man/man3/comedi_set_write_subdevice.3
+/usr/share/man/man3/comedi_strerror.3
+/usr/share/man/man3/comedi_sv_init.3
+/usr/share/man/man3/comedi_sv_measure.3
+/usr/share/man/man3/comedi_sv_update.3
+/usr/share/man/man3/comedi_timed_1chan.3
+/usr/share/man/man3/comedi_to_phys.3
+/usr/share/man/man3/comedi_to_physical.3
+/usr/share/man/man3/comedi_trigger.3
+/usr/share/man/man3/comedi_unlock.3
+/usr/share/man/man7/comedi.7
+/usr/share/man/man8/comedi_config.8
 
 %files python
 %defattr(-,root,root,-)
