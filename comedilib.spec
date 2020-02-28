@@ -4,24 +4,23 @@
 #
 Name     : comedilib
 Version  : 0.11.0
-Release  : 15
+Release  : 16
 URL      : https://github.com/Linux-Comedi/comedilib/releases/download/r0_11_0/comedilib-0.11.0.tar.gz
 Source0  : https://github.com/Linux-Comedi/comedilib/releases/download/r0_11_0/comedilib-0.11.0.tar.gz
-Summary  : Data Acquisition library for the Comedi DAQ driver.
+Summary  : Comedi is the kernel-level driver code. Comedilib is the user-level API library code. This package includes official python bindings.
 Group    : Development/Tools
 License  : LGPL-2.1
-Requires: comedilib-bin
-Requires: comedilib-lib
-Requires: comedilib-license
-Requires: comedilib-man
-Requires: comedilib-python3
-Requires: comedilib-python
+Requires: comedilib-bin = %{version}-%{release}
+Requires: comedilib-lib = %{version}-%{release}
+Requires: comedilib-license = %{version}-%{release}
+Requires: comedilib-man = %{version}-%{release}
+Requires: comedilib-python = %{version}-%{release}
+Requires: comedilib-python3 = %{version}-%{release}
 BuildRequires : bison
+BuildRequires : buildreq-cpan
+BuildRequires : buildreq-distutils3
 BuildRequires : flex
-BuildRequires : pbr
-BuildRequires : pip
 BuildRequires : python3-dev
-BuildRequires : setuptools
 BuildRequires : swig
 BuildRequires : xmlto
 
@@ -33,8 +32,7 @@ supported DAQ cards, such as those from National Instruments.
 %package bin
 Summary: bin components for the comedilib package.
 Group: Binaries
-Requires: comedilib-license
-Requires: comedilib-man
+Requires: comedilib-license = %{version}-%{release}
 
 %description bin
 bin components for the comedilib package.
@@ -43,9 +41,11 @@ bin components for the comedilib package.
 %package dev
 Summary: dev components for the comedilib package.
 Group: Development
-Requires: comedilib-lib
-Requires: comedilib-bin
-Provides: comedilib-devel
+Requires: comedilib-lib = %{version}-%{release}
+Requires: comedilib-bin = %{version}-%{release}
+Provides: comedilib-devel = %{version}-%{release}
+Requires: comedilib = %{version}-%{release}
+Requires: comedilib = %{version}-%{release}
 
 %description dev
 dev components for the comedilib package.
@@ -54,7 +54,7 @@ dev components for the comedilib package.
 %package doc
 Summary: doc components for the comedilib package.
 Group: Documentation
-Requires: comedilib-man
+Requires: comedilib-man = %{version}-%{release}
 
 %description doc
 doc components for the comedilib package.
@@ -63,7 +63,7 @@ doc components for the comedilib package.
 %package lib
 Summary: lib components for the comedilib package.
 Group: Libraries
-Requires: comedilib-license
+Requires: comedilib-license = %{version}-%{release}
 
 %description lib
 lib components for the comedilib package.
@@ -88,7 +88,7 @@ man components for the comedilib package.
 %package python
 Summary: python components for the comedilib package.
 Group: Default
-Requires: comedilib-python3
+Requires: comedilib-python3 = %{version}-%{release}
 
 %description python
 python components for the comedilib package.
@@ -105,28 +105,35 @@ python3 components for the comedilib package.
 
 %prep
 %setup -q -n comedilib-0.11.0
+cd %{_builddir}/comedilib-0.11.0
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-export LANG=C
-export SOURCE_DATE_EPOCH=1531203065
+export LANG=C.UTF-8
+export SOURCE_DATE_EPOCH=1582911875
+# -Werror is for werrorists
+export GCC_IGNORE_WERROR=1
+export CFLAGS="$CFLAGS -fno-lto "
+export FCFLAGS="$CFLAGS -fno-lto "
+export FFLAGS="$CFLAGS -fno-lto "
+export CXXFLAGS="$CXXFLAGS -fno-lto "
 %configure --disable-static PYTHON=python3
 make  %{?_smp_mflags}
 
 %check
-export LANG=C
+export LANG=C.UTF-8
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1531203065
+export SOURCE_DATE_EPOCH=1582911875
 rm -rf %{buildroot}
-mkdir -p %{buildroot}/usr/share/doc/comedilib
-cp COPYING %{buildroot}/usr/share/doc/comedilib/COPYING
+mkdir -p %{buildroot}/usr/share/package-licenses/comedilib
+cp %{_builddir}/comedilib-0.11.0/COPYING %{buildroot}/usr/share/package-licenses/comedilib/cf756914ec51f52f9c121be247bfda232dc6afd2
 %make_install
 
 %files
@@ -140,27 +147,15 @@ cp COPYING %{buildroot}/usr/share/doc/comedilib/COPYING
 
 %files dev
 %defattr(-,root,root,-)
-/usr/include/*.h
-/usr/include/*.hpp
+/usr/include/comedi.h
+/usr/include/comedi_errno.h
+/usr/include/comedi_iostream.hpp
+/usr/include/comedilib.h
+/usr/include/comedilib.hpp
+/usr/include/comedilib_scxi.h
+/usr/include/comedilib_version.h
 /usr/lib64/libcomedi.so
 /usr/lib64/pkgconfig/comedilib.pc
-
-%files doc
-%defattr(0644,root,root,0755)
-%doc /usr/share/doc/comedilib/*
-
-%files lib
-%defattr(-,root,root,-)
-/usr/lib64/libcomedi.so.0
-/usr/lib64/libcomedi.so.0.11.0
-
-%files license
-%defattr(-,root,root,-)
-/usr/share/doc/comedilib/COPYING
-
-%files man
-%defattr(-,root,root,-)
-/usr/share/man/man1/comedi_board_info.1
 /usr/share/man/man3/comedi_apply_calibration.3
 /usr/share/man/man3/comedi_apply_parsed_calibration.3
 /usr/share/man/man3/comedi_arm.3
@@ -257,6 +252,23 @@ cp COPYING %{buildroot}/usr/share/doc/comedilib/COPYING
 /usr/share/man/man3/comedi_to_physical.3
 /usr/share/man/man3/comedi_trigger.3
 /usr/share/man/man3/comedi_unlock.3
+
+%files doc
+%defattr(0644,root,root,0755)
+%doc /usr/share/doc/comedilib/*
+
+%files lib
+%defattr(-,root,root,-)
+/usr/lib64/libcomedi.so.0
+/usr/lib64/libcomedi.so.0.11.0
+
+%files license
+%defattr(0644,root,root,0755)
+/usr/share/package-licenses/comedilib/cf756914ec51f52f9c121be247bfda232dc6afd2
+
+%files man
+%defattr(0644,root,root,0755)
+/usr/share/man/man1/comedi_board_info.1
 /usr/share/man/man7/comedi.7
 /usr/share/man/man8/comedi_config.8
 

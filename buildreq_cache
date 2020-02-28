@@ -1,5 +1,6 @@
 0.11.0
-swig
-flex
-xmlto
 bison
+flex
+python3-dev
+swig
+xmlto
